@@ -47,9 +47,15 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Stack(
         children: [
           // 배경 이미지
+          // Positioned.fill(
+          //   child: ImageDisplay(
+          //       imageUrls: urlData!['imageUrls']), // 로컬 데이터에서 이미지 URL 리스트 전달
+          // ),
           Positioned.fill(
-            child: ImageDisplay(
-                imageUrls: urlData!['imageUrls']), // 로컬 데이터에서 이미지 URL 리스트 전달
+            child: urlData != null && urlData!['imageUrls'] != null
+                ? ImageDisplay(
+                    imageUrls: urlData!['imageUrls']) // 이미지 URL 리스트 전달
+                : Container(), // 데이터가 null인 경우 빈 화면 표시
           ),
           // 상단 날씨 정보
           Positioned(

@@ -13,14 +13,17 @@ class ImageDisplay extends StatelessWidget {
     final random = Random();
     final String selectedImageUrl = imageUrls[random.nextInt(imageUrls.length)];
 
-    return SizedBox();
-    // return Container(
-    //   decoration: BoxDecoration(
-    //     image: DecorationImage(
-    //       image: NetworkImage(selectedImageUrl),
-    //       fit: BoxFit.cover, // 이미지를 화면에 꽉 채우기
-    //     ),
-    //   ),
-    // );
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: NetworkImage(selectedImageUrl),
+          fit: BoxFit.cover, // 이미지를 화면에 꽉 채우기
+          onError: (error, stackTrace) {
+            print('Image load error: $error'); // 에러 로그 출력
+          },
+        ),
+      ),
+      // child 부분 제거
+    );
   }
 }
