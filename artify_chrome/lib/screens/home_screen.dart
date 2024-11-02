@@ -27,11 +27,16 @@ class _HomeScreenState extends State<HomeScreen> {
           // await rootBundle.loadString('assets/links.json');
           await rootBundle.loadString('links.json');
       final Map<String, dynamic> jsonData = json.decode(jsonString);
+
+      // imageUrls 데이터를 List<String>으로 변환
+      List<String> imageUrls = List<String>.from(jsonData['imageUrls']);
+
       setState(() {
         urlData = jsonData;
+        urlData!['imageUrls'] = imageUrls; // 변환된 List<String>을 urlData에 저장
       });
     } catch (e) {
-      print('Error!! 131325 : loading URL data: $e');
+      print('Error 11021440 : loading URL data: $e');
     }
   }
 
@@ -43,7 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           // 배경 이미지
           Positioned.fill(
-            child: ImageDisplay(), // 이미지 출력 위젯
+            child: ImageDisplay(
+                imageUrls: urlData!['imageUrls']), // 로컬 데이터에서 이미지 URL 리스트 전달
           ),
           // 상단 날씨 정보
           Positioned(
