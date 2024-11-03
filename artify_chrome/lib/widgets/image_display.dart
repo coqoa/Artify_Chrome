@@ -19,7 +19,7 @@ class ImageDisplay extends StatelessWidget {
           image: NetworkImage(selectedImageUrl),
           fit: BoxFit.cover, // 이미지를 화면에 꽉 채우기
           onError: (error, stackTrace) {
-            print('Image load error: $error'); // 에러 로그 출력
+            print('Image load error 11021456 : $error'); // 에러 로그 출력
           },
         ),
       ),

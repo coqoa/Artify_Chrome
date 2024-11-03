@@ -1,18 +1,23 @@
 {
-    "imageUrls": [
-      "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbtD05K%2FbtsKtHI3yIu%2FQEqKL8C3WSyPBrkbsWmX3k%2Fimg.webp",
-      "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fwikzt%2FbtsKvaCT4vb%2F5lrmpLCBboDSL7XM2gsUtk%2Fimg.webp",
-      "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdkhsrZ%2FbtsKvbV7iLp%2FLQZZzF0BpS6PkLB3czcjD1%2Fimg.webp",
-      "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FZU4ZO%2FbtsKtMjaJw0%2F7iFCdpHuPFtQ2kJryUaXLK%2Fimg.webp",
-      "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fcns9aR%2FbtsKtopDorf%2FQ4xo0euoDZZdQmzg1OtjjK%2Fimg.webp",
-      "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdCWVqm%2FbtsKuTaf7WO%2FcbTSONxMONQsS8ldveM8dk%2Fimg.webp",
-      "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FpHb5k%2FbtsKuUmHMbE%2F1lDklClAKioeGSW3oOTPm0%2Fimg.webp",
-      "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FTFWrS%2FbtsKuUmHMcl%2F9u5enCMhLNSz7DoZytD6b1%2Fimg.webp",
-      "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbKVHy4%2FbtsKub3N8wX%2FvadpOwlUMJppYpUSIkzgU1%2Fimg.webp",
-      "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fm38wa%2FbtsKtDGNz6A%2FGkH43BPKJj1MeqWVykvmOK%2Fimg.webp"
-    ],
-    "youtube": "https://www.youtube.com/channel/example",
-    "instagram": "https://www.instagram.com/example",
-    "blog": "https://example.com/blog",
-    "email": "mailto:example@example.com"
-  }
+  "imageUrls": [
+    "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbtD05K%2FbtsKtHI3yIu%2FQEqKL8C3WSyPBrkbsWmX3k%2Fimg.webp",
+    "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fwikzt%2FbtsKvaCT4vb%2F5lrmpLCBboDSL7XM2gsUtk%2Fimg.webp",
+    "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdkhsrZ%2FbtsKvbV7iLp%2FLQZZzF0BpS6PkLB3czcjD1%2Fimg.webp",
+    "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FZU4ZO%2FbtsKtMjaJw0%2F7iFCdpHuPFtQ2kJryUaXLK%2Fimg.webp",
+    "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fcns9aR%2FbtsKtopDorf%2FQ4xo0euoDZZdQmzg1OtjjK%2Fimg.webp",
+    "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdCWVqm%2FbtsKuTaf7WO%2FcbTSONxMONQsS8ldveM8dk%2Fimg.webp",
+    "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FpHb5k%2FbtsKuUmHMbE%2F1lDklClAKioeGSW3oOTPm0%2Fimg.webp",
+    "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FTFWrS%2FbtsKuUmHMcl%2F9u5enCMhLNSz7DoZytD6b1%2Fimg.webp",
+    "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbKVHy4%2FbtsKub3N8wX%2FvadpOwlUMJppYpUSIkzgU1%2Fimg.webp",
+    "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fm38wa%2FbtsKtDGNz6A%2FGkH43BPKJj1MeqWVykvmOK%2Fimg.webp"
+  ],
+  "searchEngines":{
+    "Google" : "https://www.google.com/search?q=",
+    "Naver" : "https://search.naver.com/search.naver?query=",
+    "Perplexity" : "https://www.perplexity.ai/search?q="
+  },
+  "youtube": "https://www.youtube.com/channel/example",
+  "instagram": "https://www.instagram.com/example",
+  "blog": "https://example.com/blog",
+  "email": "mailto:example@example.com"
+}

@@ -46,11 +46,6 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // 배경 이미지
-          // Positioned.fill(
-          //   child: ImageDisplay(
-          //       imageUrls: urlData!['imageUrls']), // 로컬 데이터에서 이미지 URL 리스트 전달
-          // ),
           Positioned.fill(
             child: urlData != null && urlData!['imageUrls'] != null
                 ? ImageDisplay(
