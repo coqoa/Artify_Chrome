@@ -1,10 +1,13 @@
+import 'package:artify_chrome/controllers/my_controller.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:get/get.dart';
 import '../widgets/main_search_bar.dart';
 import '../widgets/image_display.dart';
 import '../widgets/weather_info.dart';
 import '../widgets/social_buttons.dart';
+import '../services/storage_service.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,6 +16,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic>? urlData; // 타입 명확히 선언
+  final MyController controller = Get.put(MyController());
+  final StorageService storageService = StorageService();
 
   @override
   void initState() {
@@ -25,11 +30,11 @@ class _HomeScreenState extends State<HomeScreen> {
       // assets/links.json 파일에서 URL 데이터 불러오기
       final String jsonString =
           // await rootBundle.loadString('assets/links.json');
-          await rootBundle.loadString('links.json');
+          await rootBundle.loadString('image_links.json');
       final Map<String, dynamic> jsonData = json.decode(jsonString);
 
       // imageUrls 데이터를 List<String>으로 변환
-      List<String> imageUrls = List<String>.from(jsonData['imageUrls']);
+      List<String> imageUrls = List<String>.from(jsonData['animal']);
 
       setState(() {
         urlData = jsonData;

@@ -1,0 +1,7 @@
+  {
+      "searchEngines":{
+        "Google" : "https://www.google.com/search?q=",
+        "Naver" : "https://search.naver.com/search.naver?query=",
+        "Perplexity" : "https://www.perplexity.ai/search?q="
+      }
+  }

@@ -22,7 +22,7 @@ class _MainSearchBarState extends State<MainSearchBar> {
   Future<void> _loadUrlData() async {
     try {
       final String jsonString =
-          await rootBundle.loadString('assets/links.json');
+          await rootBundle.loadString('assets/search_engine_list.json');
       final Map<String, dynamic> jsonData = json.decode(jsonString);
       setState(() {
         urlData = jsonData;
