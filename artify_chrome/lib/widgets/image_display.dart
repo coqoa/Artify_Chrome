@@ -60,43 +60,20 @@ class ImageDisplay extends StatelessWidget {
                     : null, // 초기화되지 않았을 때는 이미지를 표시하지 않음
               ),
               child: selectedImageUrl.value.isEmpty
-                  ? Center(
+                  ? const Center(
                       child: CircularProgressIndicator()) // 초기화 전 로딩 인디케이터 표시
                   : null, // 초기화되면 이미지만 표시
             )),
 
         // 우측 상단 체크 아이콘
         Positioned(
-          top: 100.0, // 상단에서의 위치 조정
-          right: 20.0, // 우측에서의 위치 조정
+          top: 30.0, // 상단에서의 위치 조정
+          right: 30.0, // 우측에서의 위치 조정
           child: InkWell(
               onTap: () {
                 pickImage(selectedImageUrl.value);
               },
-              child:
-                  // Container(
-                  //     padding: EdgeInsets.all(6.0),
-                  //     decoration: BoxDecoration(
-                  //       color: Colors.white.withOpacity(0.8), // 배경색 (원하는 대로 변경 가능)
-                  //       borderRadius: BorderRadius.circular(8.0),
-                  //       boxShadow: [
-                  //         BoxShadow(
-                  //           color: Colors.black26,
-                  //           blurRadius: 4.0,
-                  //           offset: Offset(0, 2),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //     child: Obx(
-                  //       () => controller.isPickedImage.value == false
-                  //         ? Icon(
-                  //             Icons.check,
-                  //             color: Colors.white,
-                  //           )
-                  //         : Icon(Icons.check, color: Colors.black)
-                  //     )
-                  //   ),
-                  Obx(
+              child: Obx(
                 () => Container(
                   padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
@@ -104,7 +81,7 @@ class ImageDisplay extends StatelessWidget {
                         ? Colors.white.withOpacity(0.4)
                         : Colors.black.withOpacity(0.7), // 상태에 따라 색상 변경
                     borderRadius: BorderRadius.circular(25.0),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         color: Colors.black12,
                         blurRadius: 4.0,
@@ -117,9 +94,6 @@ class ImageDisplay extends StatelessWidget {
                     color: controller.isPickedImage.value == false
                         ? Colors.white
                         : Colors.white, // 상태에 따라 아이콘 색상 변경
-                    // color: controller.isPickedImage.value == false
-                    //     ? Colors.white
-                    //     : Colors.black, // 상태에 따라 아이콘 색상 변경
                   ),
                 ),
               )),
