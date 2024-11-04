@@ -98,7 +98,7 @@ class _MainSearchBarState extends State<MainSearchBar> {
             : searchBarWidth,
         padding: EdgeInsets.symmetric(horizontal: 16.0),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.95),
+          color: Colors.white.withOpacity(0.55),
           borderRadius: BorderRadius.circular(30.0),
           boxShadow: [
             BoxShadow(
@@ -116,14 +116,14 @@ class _MainSearchBarState extends State<MainSearchBar> {
               child: Padding(
                 padding: EdgeInsets.only(right: 8.0),
                 //! 선택한 검색엔진에 따라 아이콘 변경
-                child: Icon(Icons.public, color: Colors.grey), // 검색 엔진 아이콘
+                child: Icon(Icons.public, color: Colors.grey[600]), // 검색 엔진 아이콘
               ),
             ),
             Expanded(
               child: TextField(
                 decoration: InputDecoration(
                   hintText: "Type here to search...",
-                  hintStyle: TextStyle(color: Colors.grey[500]),
+                  hintStyle: TextStyle(color: Colors.grey[600]),
                   border: InputBorder.none,
                 ),
                 onSubmitted: (value) async {
@@ -140,7 +140,7 @@ class _MainSearchBarState extends State<MainSearchBar> {
               ),
             ),
             IconButton(
-              icon: Icon(Icons.search, color: Colors.grey),
+              icon: Icon(Icons.search, color: Colors.grey[600]),
               onPressed: () {
                 //! 검색결과를 밖에 저장해서 검색버튼에도 동일한 이벤트 타도록
                 FocusScope.of(context).unfocus(); // 키보드 내리기

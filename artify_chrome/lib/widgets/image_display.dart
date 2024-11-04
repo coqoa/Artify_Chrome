@@ -9,7 +9,7 @@ class ImageDisplay extends StatelessWidget {
   final MyController controller = Get.put(MyController());
   final StorageService storageService = StorageService();
   final random = Random();
-  RxString selectedImageUrl = ''.obs; // RxString으로 선언하여 상태를 반응형으로 관리
+  RxString selectedImageUrl = ''.obs; //
 
   // 생성자에서 이미지 URL 리스트를 받아옴
   ImageDisplay({required this.imageUrls});
@@ -20,26 +20,27 @@ class ImageDisplay extends StatelessWidget {
       // 데이터가 없는 경우
       controller.isPickedImage.value = false;
       selectedImageUrl.value = imageUrls[random.nextInt(imageUrls.length)];
-      print('로컬스토리지 데이터 없음');
+      print('저장된 이미지 url 없음');
     } else {
       // 데이터가 있는 경우
       controller.isPickedImage.value = true;
-      selectedImageUrl.value = await storageService.loadData('pickImage') ?? '';
-      print('로컬스토리지 데이터 있음');
+      selectedImageUrl.value = storageService.loadData('pickImage') ?? '';
+      print('저장된 이미지 url 있음');
     }
   }
 
   Future<void> pickImage(String imageUrl) async {
-    storageService.saveData('pickImage', imageUrl);
-    controller.isPickedImage.value = true;
-    final data = await storageService.loadData('pickImage');
-    print(data);
-    print('-=-=-=--=-=-=--=');
+    if (controller.isPickedImage.value == false) {
+      storageService.saveData('pickImage', imageUrl);
+      controller.isPickedImage.value = true;
+    } else {
+      storageService.saveData('pickImage', '');
+      controller.isPickedImage.value = false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // 상태 변화를 감지하여 UI가 자동 업데이트되도록 `Obx`로 감쌈
     checkPickedImg();
 
     return Stack(
@@ -63,36 +64,67 @@ class ImageDisplay extends StatelessWidget {
                       child: CircularProgressIndicator()) // 초기화 전 로딩 인디케이터 표시
                   : null, // 초기화되면 이미지만 표시
             )),
-        // 우측 상단에 커스터마이징 가능한 컨테이너 추가
+
+        // 우측 상단 체크 아이콘
         Positioned(
-          top: 80.0, // 상단에서의 위치 조정
+          top: 100.0, // 상단에서의 위치 조정
           right: 20.0, // 우측에서의 위치 조정
-          child: GestureDetector(
-            onTap: () {
-              pickImage(selectedImageUrl.value);
-            },
-            child: Container(
-              padding: EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.8), // 배경색 (원하는 대로 변경 가능)
-                borderRadius: BorderRadius.circular(8.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 4.0,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
+          child: InkWell(
+              onTap: () {
+                pickImage(selectedImageUrl.value);
+              },
               child:
-                  Icon(Icons.check, color: Colors.black), // 아이콘 (원하는 대로 변경 가능)
-            ),
-          ),
+                  // Container(
+                  //     padding: EdgeInsets.all(6.0),
+                  //     decoration: BoxDecoration(
+                  //       color: Colors.white.withOpacity(0.8), // 배경색 (원하는 대로 변경 가능)
+                  //       borderRadius: BorderRadius.circular(8.0),
+                  //       boxShadow: [
+                  //         BoxShadow(
+                  //           color: Colors.black26,
+                  //           blurRadius: 4.0,
+                  //           offset: Offset(0, 2),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //     child: Obx(
+                  //       () => controller.isPickedImage.value == false
+                  //         ? Icon(
+                  //             Icons.check,
+                  //             color: Colors.white,
+                  //           )
+                  //         : Icon(Icons.check, color: Colors.black)
+                  //     )
+                  //   ),
+                  Obx(
+                () => Container(
+                  padding: EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: controller.isPickedImage.value == false
+                        ? Colors.white.withOpacity(0.4)
+                        : Colors.black.withOpacity(0.7), // 상태에 따라 색상 변경
+                    borderRadius: BorderRadius.circular(25.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 4.0,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.check,
+                    color: controller.isPickedImage.value == false
+                        ? Colors.white
+                        : Colors.white, // 상태에 따라 아이콘 색상 변경
+                    // color: controller.isPickedImage.value == false
+                    //     ? Colors.white
+                    //     : Colors.black, // 상태에 따라 아이콘 색상 변경
+                  ),
+                ),
+              )),
         ),
       ],
     );
   }
 }
-
-// 데이터 있을 때 없을 때 체크버튼 디자인 변경하기
-// 데이터 있을 때 체크버튼 누르면 데이터 비우기 기능 구현
