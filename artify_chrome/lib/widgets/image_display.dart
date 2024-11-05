@@ -1,30 +1,48 @@
+import 'dart:convert';
 import 'package:artify_chrome/controllers/my_controller.dart';
 import 'package:artify_chrome/services/storage_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'dart:math';
 import 'package:get/get.dart';
 
 class ImageDisplay extends StatelessWidget {
-  final List<String> imageUrls;
   final MyController controller = Get.put(MyController());
-  final StorageService storageService = StorageService();
+  final storageService = Get.find<StorageService>();
   final random = Random();
-  RxString selectedImageUrl = ''.obs; //
+  RxString selectedImageUrl = ''.obs;
+  RxList<String> imageUrls = <String>[].obs; // RxList로 선언
 
-  // 생성자에서 이미지 URL 리스트를 받아옴
-  ImageDisplay({required this.imageUrls});
+  Future<void> _loadUrlData() async {
+    try {
+      // assets/image_links.json 파일에서 URL 데이터 불러오기
+      final String jsonString =
+          await rootBundle.loadString('assets/image_links.json');
+      final Map<String, dynamic> jsonData = json.decode(jsonString);
+
+      // imageUrls 데이터를 List<String>으로 변환 후 RxList에 추가
+      imageUrls.assignAll(List<String>.from(jsonData['animal']));
+
+      // 데이터 로드 후 체크 실행
+      checkPickedImg();
+    } catch (e) {
+      print('Error 11021440 : loading URL data: $e');
+    }
+  }
 
   Future<void> checkPickedImg() async {
     final data = await storageService.loadData('pickImage');
     if (data == null || data.isEmpty) {
       // 데이터가 없는 경우
       controller.isPickedImage.value = false;
-      selectedImageUrl.value = imageUrls[random.nextInt(imageUrls.length)];
+      if (imageUrls.isNotEmpty) {
+        selectedImageUrl.value = imageUrls[random.nextInt(imageUrls.length)];
+      }
       print('저장된 이미지 url 없음');
     } else {
       // 데이터가 있는 경우
       controller.isPickedImage.value = true;
-      selectedImageUrl.value = storageService.loadData('pickImage') ?? '';
+      selectedImageUrl.value = data;
       print('저장된 이미지 url 있음');
     }
   }
@@ -41,7 +59,7 @@ class ImageDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    checkPickedImg();
+    _loadUrlData();
 
     return Stack(
       children: [
@@ -51,52 +69,49 @@ class ImageDisplay extends StatelessWidget {
                 image: selectedImageUrl.value.isNotEmpty
                     ? DecorationImage(
                         image: NetworkImage(selectedImageUrl.value),
-                        fit: BoxFit.cover, // 이미지를 화면에 꽉 채우기
+                        fit: BoxFit.cover,
                         onError: (error, stackTrace) {
-                          print(
-                              'Image load error 11021456 : $error'); // 에러 로그 출력
+                          print('Image load error 11021456 : $error');
                         },
                       )
-                    : null, // 초기화되지 않았을 때는 이미지를 표시하지 않음
+                    : null,
               ),
               child: selectedImageUrl.value.isEmpty
-                  ? const Center(
-                      child: CircularProgressIndicator()) // 초기화 전 로딩 인디케이터 표시
-                  : null, // 초기화되면 이미지만 표시
+                  ? const Center(child: CircularProgressIndicator())
+                  : null,
             )),
 
         // 우측 상단 체크 아이콘
         Positioned(
-          top: 30.0, // 상단에서의 위치 조정
-          right: 30.0, // 우측에서의 위치 조정
+          top: 30.0,
+          right: 30.0,
           child: InkWell(
-              onTap: () {
-                pickImage(selectedImageUrl.value);
-              },
-              child: Obx(
-                () => Container(
-                  padding: EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: controller.isPickedImage.value == false
-                        ? Colors.white.withOpacity(0.4)
-                        : Colors.black.withOpacity(0.7), // 상태에 따라 색상 변경
-                    borderRadius: BorderRadius.circular(25.0),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 4.0,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.check,
-                    color: controller.isPickedImage.value == false
-                        ? Colors.white
-                        : Colors.white, // 상태에 따라 아이콘 색상 변경
-                  ),
+            onTap: () {
+              pickImage(selectedImageUrl.value);
+            },
+            child: Obx(
+              () => Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: controller.isPickedImage.value == false
+                      ? Colors.white.withOpacity(0.4)
+                      : Colors.black.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(25.0),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4.0,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
                 ),
-              )),
+                child: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
         ),
       ],
     );

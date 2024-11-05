@@ -1,9 +1,13 @@
+import 'package:artify_chrome/controllers/my_controller.dart';
+import 'package:artify_chrome/services/storage_service.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Get.put(StorageService());
+  Get.put(MyController());
   runApp(MyApp());
 }
 

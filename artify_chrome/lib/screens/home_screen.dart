@@ -15,35 +15,34 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Map<String, dynamic>? urlData; // 타입 명확히 선언
-  final MyController controller = Get.put(MyController());
-  final StorageService storageService = StorageService();
+  // Map<String, dynamic>? urlData; // 타입 명확히 선언
+  final controller = Get.find<MyController>();
 
   @override
   void initState() {
     super.initState();
-    _loadUrlData();
+    // _loadUrlData();
   }
 
-  Future<void> _loadUrlData() async {
-    try {
-      // assets/links.json 파일에서 URL 데이터 불러오기
-      final String jsonString =
-          // await rootBundle.loadString('assets/links.json');
-          await rootBundle.loadString('image_links.json');
-      final Map<String, dynamic> jsonData = json.decode(jsonString);
+  // Future<void> _loadUrlData() async {
+  //   try {
+  //     // assets/links.json 파일에서 URL 데이터 불러오기
+  //     final String jsonString =
+  //         // await rootBundle.loadString('assets/links.json');
+  //         await rootBundle.loadString('image_links.json');
+  //     final Map<String, dynamic> jsonData = json.decode(jsonString);
 
-      // imageUrls 데이터를 List<String>으로 변환
-      List<String> imageUrls = List<String>.from(jsonData['animal']);
+  //     // imageUrls 데이터를 List<String>으로 변환
+  //     List<String> imageUrls = List<String>.from(jsonData['animal']);
 
-      setState(() {
-        urlData = jsonData;
-        urlData!['imageUrls'] = imageUrls; // 변환된 List<String>을 urlData에 저장
-      });
-    } catch (e) {
-      print('Error 11021440 : loading URL data: $e');
-    }
-  }
+  //     setState(() {
+  //       urlData = jsonData;
+  //       urlData!['imageUrls'] = imageUrls; // 변환된 List<String>을 urlData에 저장
+  //     });
+  //   } catch (e) {
+  //     print('Error 11021440 : loading URL data: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +50,12 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: urlData != null && urlData!['imageUrls'] != null
-                ? ImageDisplay(
-                    imageUrls: urlData!['imageUrls']) // 이미지 URL 리스트 전달
-                : Container(), // 데이터가 null인 경우 빈 화면 표시
-          ),
+          Positioned.fill(child: ImageDisplay()
+              // urlData != null && urlData!['imageUrls'] != null
+              //     ? ImageDisplay(
+              //         imageUrls: urlData!['imageUrls']) // 이미지 URL 리스트 전달
+              //     : Container(), // 데이터가 null인 경우 빈 화면 표시
+              ),
           // 상단 날씨 정보
           Positioned(
             top: 40.0,
@@ -68,15 +67,16 @@ class _HomeScreenState extends State<HomeScreen> {
           Center(
             child: MainSearchBar(), // 검색창 위젯
           ),
+
           // 하단 소셜 버튼들
-          Positioned(
-            bottom: 20.0,
-            left: 0.0,
-            right: 0.0,
-            child: urlData != null
-                ? SocialButtons(urlData: urlData!)
-                : CircularProgressIndicator(), // URL 데이터를 통해 버튼을 표시
-          ),
+          // Positioned(
+          //   bottom: 20.0,
+          //   left: 0.0,
+          //   right: 0.0,
+          //   // child: urlData != null
+          //   //     ? SocialButtons(urlData: urlData!)
+          //   //     : CircularProgressIndicator(), // URL 데이터를 통해 버튼을 표시
+          // ),
         ],
       ),
     );
