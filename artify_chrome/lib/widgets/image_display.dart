@@ -11,23 +11,20 @@ class ImageDisplay extends StatelessWidget {
   final StorageService storageService = Get.find<StorageService>();
   final random = Random();
   RxString selectedImageUrl = ''.obs;
-  RxMap<String, dynamic> jsonData = <String, dynamic>{}.obs;
-  RxList<String> imageUrls = <String>[].obs;
+  RxMap<String, dynamic> jsonData = RxMap<String, dynamic>();
+  RxList<String> imageUrls = RxList<String>();
   RxBool showCategoryList = false.obs;
   RxString selectedCategory = 'All'.obs;
 
   ImageDisplay({Key? key}) : super(key: key) {
     _initializeCategoryAndLoadData();
+    checkPickedImg(); // 한 번만 실행하도록 initState 위치에 호출
   }
 
   Future<void> _initializeCategoryAndLoadData() async {
     final storedCategory = await storageService.loadData('pickImageCategory');
-    if (storedCategory == null || storedCategory.isEmpty) {
-      selectedCategory.value = 'All';
-      storageService.saveData('pickImageCategory', 'All');
-    } else {
-      selectedCategory.value = storedCategory;
-    }
+    selectedCategory.value = storedCategory ?? 'All';
+    storageService.saveData('pickImageCategory', selectedCategory.value);
     _loadUrlData();
   }
 
@@ -49,50 +46,39 @@ class ImageDisplay extends StatelessWidget {
 
     if (jsonData.isNotEmpty) {
       if (category == 'All') {
-        List<String> allImages = [];
-        jsonData.forEach((_, urls) {
-          allImages.addAll(List<String>.from(urls));
-        });
+        final allImages =
+            jsonData.values.expand((urls) => List<String>.from(urls)).toList();
         imageUrls.assignAll(allImages);
-      } else if (jsonData.containsKey(category)) {
-        imageUrls.assignAll(List<String>.from(jsonData[category]));
+      } else {
+        imageUrls.assignAll(List<String>.from(jsonData[category] ?? []));
       }
-      if (imageUrls.isNotEmpty) {
+      if (imageUrls.isNotEmpty && !controller.isPickedImage.value) {
         selectedImageUrl.value = imageUrls[random.nextInt(imageUrls.length)];
       }
-    } else {
-      print("Data not loaded yet.");
     }
     showCategoryList.value = false;
   }
 
   Future<void> checkPickedImg() async {
     final data = await storageService.loadData('pickImage');
-    if (data == null || data.isEmpty) {
-      controller.isPickedImage.value = false;
-      selectedImageUrl.value = imageUrls.isNotEmpty
-          ? imageUrls[random.nextInt(imageUrls.length)]
-          : '';
-    } else {
-      controller.isPickedImage.value = true;
-      selectedImageUrl.value = data;
-    }
+    controller.isPickedImage.value = data != null && data.isNotEmpty;
+    selectedImageUrl.value = controller.isPickedImage.value && data != null
+        ? data
+        : (imageUrls.isNotEmpty
+            ? imageUrls[random.nextInt(imageUrls.length)]
+            : '');
   }
 
   Future<void> pickImage(String imageUrl) async {
-    if (!controller.isPickedImage.value) {
-      storageService.saveData('pickImage', imageUrl);
-      controller.isPickedImage.value = true;
-    } else {
-      storageService.saveData('pickImage', '');
-      controller.isPickedImage.value = false;
-    }
+    controller.isPickedImage.value = !controller.isPickedImage.value;
+    final value = controller.isPickedImage.value ? imageUrl : '';
+    storageService.saveData('pickImage', value);
+    selectedImageUrl.value =
+        value.isNotEmpty ? value : imageUrls[random.nextInt(imageUrls.length)];
   }
 
   @override
   Widget build(BuildContext context) {
-    checkPickedImg();
-
     return Stack(
       children: [
         // 배경 이미지
@@ -212,9 +198,7 @@ class ImageDisplay extends StatelessWidget {
                           ),
                           for (String category in jsonData.keys)
                             InkWell(
-                              onTap: () {
-                                selectCategory(category);
-                              },
+                              onTap: () => selectCategory(category),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0, vertical: 8.0),
@@ -232,7 +216,7 @@ class ImageDisplay extends StatelessWidget {
                         ],
                       ),
                     )
-                  : Container()),
+                  : const SizedBox.shrink()), // 빈 공간을 최적화
             ],
           ),
         ),
