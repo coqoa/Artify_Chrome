@@ -48,29 +48,6 @@ class _MainSearchBarState extends State<MainSearchBar> {
               color: Colors.white.withOpacity(0.8),
               borderRadius: BorderRadius.circular(15.0),
             ),
-            // child: Column(
-            //   mainAxisSize: MainAxisSize.min,
-            //   children: [
-            //     ...searchEngines.map((engine) {
-            //       return ListTile(
-            //         title: Text(
-            //           engine,
-            //           style: TextStyle(
-            //               color: selectedEngine == engine
-            //                   ? Colors.black87
-            //                   : Colors.grey[500],
-            //               fontWeight: FontWeight.bold),
-            //         ),
-            //         onTap: () {
-            //           setState(() {
-            //             selectedEngine = engine;
-            //           });
-            //           Navigator.pop(context); // 모달 닫기
-            //         },
-            //       );
-            //     }).toList(),
-            //   ],
-            // ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -123,12 +100,44 @@ class _MainSearchBarState extends State<MainSearchBar> {
     double screenWidth = MediaQuery.of(context).size.width;
     double searchBarWidth = screenWidth * 0.85; // 화면 너비의 85% 차지
     double maxSearchBarWidth = 1200; // 최대 너비 설정
+    double searchBarHeight;
+    double fontSize;
+    double iconSize;
+
+    // 반응형 - 검색 창 세로
+    if (screenWidth >= 1200) {
+      // 컴퓨터
+      searchBarHeight = 44.0;
+    } else if (screenWidth >= 600) {
+      // 태블릿
+      searchBarHeight = 40.0;
+    } else {
+      // 모바일
+      searchBarHeight = 36.0;
+    }
+    // 반응형 - 폰트 사이즈
+    if (screenWidth >= 1200) {
+      fontSize = 15.0; // 데스크탑
+    } else if (screenWidth >= 600) {
+      fontSize = 14.0; // 태블릿
+    } else {
+      fontSize = 13.0; // 모바일
+    }
+    // 반응형 - 아이콘 사이즈
+    if (screenWidth >= 1200) {
+      iconSize = 22.0; // 데스크톱
+    } else if (screenWidth >= 600) {
+      iconSize = 21.0; // 태블릿
+    } else {
+      iconSize = 20.0; // 모바일
+    }
 
     return Center(
       child: Container(
         width: searchBarWidth > maxSearchBarWidth
             ? maxSearchBarWidth
             : searchBarWidth,
+        height: searchBarHeight,
         padding: EdgeInsets.symmetric(horizontal: 16.0),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.55),
@@ -150,15 +159,21 @@ class _MainSearchBarState extends State<MainSearchBar> {
                 child: Icon(
                   Icons.public,
                   color: Colors.grey[600],
+                  size: iconSize,
                 ),
               ),
             ),
             Expanded(
               child: TextField(
+                textAlignVertical: TextAlignVertical.center,
+                style: TextStyle(fontSize: fontSize),
+                cursorHeight: fontSize,
                 decoration: InputDecoration(
                   hintText: "Type here to search...",
-                  hintStyle: TextStyle(color: Colors.grey[600]),
+                  hintStyle:
+                      TextStyle(color: Colors.grey[600], fontSize: fontSize),
                   border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(vertical: 15), // 패딩 조절
                 ),
                 onSubmitted: (value) async {
                   if (value.isNotEmpty) {
@@ -171,7 +186,11 @@ class _MainSearchBarState extends State<MainSearchBar> {
               ),
             ),
             IconButton(
-              icon: Icon(Icons.search, color: Colors.grey[600]),
+              icon: Icon(
+                Icons.search,
+                color: Colors.grey[600],
+                size: iconSize,
+              ),
               onPressed: () {
                 FocusScope.of(context).unfocus(); // 키보드 내리기
               },
