@@ -64,10 +64,10 @@ class _HomeScreenState extends State<HomeScreen> {
             child: WeatherInfo(), // 날씨 및 시간 정보 위젯
           ),
           // 중앙 검색창
-          Center(
-            child: MainSearchBar(), // 검색창 위젯
-          ),
-
+          // Center(
+          //   child: MainSearchBar(), // 검색창 위젯
+          // ),
+          MainSearchBar()
           // 하단 소셜 버튼들
           // Positioned(
           //   bottom: 20.0,

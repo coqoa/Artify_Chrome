@@ -38,34 +38,69 @@ class _MainSearchBarState extends State<MainSearchBar> {
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 40.0),
+            width: 20,
+            padding: EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 8.0,
-                  offset: Offset(0, 4),
-                ),
-              ],
+              color: Colors.white.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(15.0),
             ),
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: searchEngines.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text(searchEngines[index]),
-                  onTap: () {
-                    setState(() {
-                      selectedEngine = searchEngines[index];
-                      _loadUrlData(); // 검색 엔진 선택 시 JSON 데이터 로드
-                    });
-                    Navigator.pop(context); // 모달 닫기
-                  },
-                );
-              },
+            // child: Column(
+            //   mainAxisSize: MainAxisSize.min,
+            //   children: [
+            //     ...searchEngines.map((engine) {
+            //       return ListTile(
+            //         title: Text(
+            //           engine,
+            //           style: TextStyle(
+            //               color: selectedEngine == engine
+            //                   ? Colors.black87
+            //                   : Colors.grey[500],
+            //               fontWeight: FontWeight.bold),
+            //         ),
+            //         onTap: () {
+            //           setState(() {
+            //             selectedEngine = engine;
+            //           });
+            //           Navigator.pop(context); // 모달 닫기
+            //         },
+            //       );
+            //     }).toList(),
+            //   ],
+            // ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ...searchEngines.map((engine) {
+                  return InkWell(
+                    onTap: () {
+                      setState(() {
+                        selectedEngine = engine;
+                      });
+                      Navigator.pop(context); // 모달 닫기
+                    },
+                    splashColor: Colors.transparent, // 클릭 효과 제거
+                    highlightColor: Colors.transparent, // 하이라이트 효과 제거
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 10.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        engine,
+                        style: TextStyle(
+                          color: selectedEngine == engine
+                              ? Colors.black87
+                              : Colors.grey[500],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ],
             ),
           ),
         );
@@ -77,9 +112,7 @@ class _MainSearchBarState extends State<MainSearchBar> {
     final Uri uri = Uri.parse(url);
 
     if (await canLaunchUrl(uri)) {
-      // 현재창에서 이동하도록,
-      await launchUrl(uri,
-          mode: LaunchMode.externalApplication); // 브라우저에서 URL 열기
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       throw 'Could not launch $url';
     }
@@ -110,13 +143,14 @@ class _MainSearchBarState extends State<MainSearchBar> {
         ),
         child: Row(
           children: [
-            // 검색엔진 선택
             GestureDetector(
               onTap: _showEngineSelectionModal,
               child: Padding(
                 padding: EdgeInsets.only(right: 8.0),
-                //! 선택한 검색엔진에 따라 아이콘 변경
-                child: Icon(Icons.public, color: Colors.grey[600]), // 검색 엔진 아이콘
+                child: Icon(
+                  Icons.public,
+                  color: Colors.grey[600],
+                ),
               ),
             ),
             Expanded(
@@ -128,12 +162,9 @@ class _MainSearchBarState extends State<MainSearchBar> {
                 ),
                 onSubmitted: (value) async {
                   if (value.isNotEmpty) {
-                    // 선택된 검색 엔진에 따라 다른 URL로 리다이렉션 로직 작성가능
                     String searchUrl = urlData[selectedEngine] ??
                         urlData['searchEngines'][selectedEngine];
                     String fullUrl = '$searchUrl$value';
-                    print('Redirecting to: $fullUrl');
-                    // 실제로 리다이렉트할 경우 웹뷰나 url_launcher 패키지 사용 가능
                     _launchURL(fullUrl);
                   }
                 },
@@ -142,7 +173,6 @@ class _MainSearchBarState extends State<MainSearchBar> {
             IconButton(
               icon: Icon(Icons.search, color: Colors.grey[600]),
               onPressed: () {
-                //! 검색결과를 밖에 저장해서 검색버튼에도 동일한 이벤트 타도록
                 FocusScope.of(context).unfocus(); // 키보드 내리기
               },
             ),
