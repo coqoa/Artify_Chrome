@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'dart:html' as html;
 
 class MainSearchBar extends StatefulWidget {
   @override
@@ -12,11 +13,26 @@ class _MainSearchBarState extends State<MainSearchBar> {
   String selectedEngine = 'Google'; // 기본 검색 엔진
   final List<String> searchEngines = ['Google', 'Naver', 'Perplexity'];
   Map<String, dynamic> urlData = {}; // JSON 데이터 저장
+  final TextEditingController _searchController =
+      TextEditingController(); // TextEditingController 추가
+  final FocusNode _focusNode = FocusNode(); // FocusNode 추가
 
   @override
   void initState() {
     super.initState();
     _loadUrlData(); // 초기 데이터 로드
+
+    // 위젯이 빌드된 후 자동으로 검색창에 포커스를 줌
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose(); // FocusNode를 해제하여 메모리 누수를 방지
+    _searchController.dispose(); // TextEditingController를 해제
+    super.dispose();
   }
 
   Future<void> _loadUrlData() async {
@@ -86,12 +102,23 @@ class _MainSearchBarState extends State<MainSearchBar> {
   }
 
   Future<void> _launchURL(String url) async {
-    final Uri uri = Uri.parse(url);
+    // final Uri uri = Uri.parse(url);
+    // if (await canLaunchUrl(uri)) {
+    //   await launchUrl(uri, mode: LaunchMode.inAppWebView); // 현재 창에서 열리도록 설정
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
+    html.window.location.href = url; // 현재 창에서 열리도록 (앱에서는 사용 안됨)
+  }
 
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      throw 'Could not launch $url';
+  // 검색 기능을 함수로 분리하여 아이콘 버튼에서도 호출 가능하도록 함
+  void _performSearch() {
+    final query = _searchController.text;
+    if (query.isNotEmpty) {
+      String searchUrl =
+          urlData[selectedEngine] ?? urlData['searchEngines'][selectedEngine];
+      String fullUrl = '$searchUrl$query';
+      _launchURL(fullUrl);
     }
   }
 
@@ -165,6 +192,8 @@ class _MainSearchBarState extends State<MainSearchBar> {
             ),
             Expanded(
               child: TextField(
+                controller: _searchController, // 컨트롤러 연결
+                focusNode: _focusNode, // 자동 포커스를 위한 FocusNode 추가
                 textAlignVertical: TextAlignVertical.center,
                 style: TextStyle(fontSize: fontSize),
                 cursorHeight: fontSize,
@@ -175,14 +204,7 @@ class _MainSearchBarState extends State<MainSearchBar> {
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(vertical: 15), // 패딩 조절
                 ),
-                onSubmitted: (value) async {
-                  if (value.isNotEmpty) {
-                    String searchUrl = urlData[selectedEngine] ??
-                        urlData['searchEngines'][selectedEngine];
-                    String fullUrl = '$searchUrl$value';
-                    _launchURL(fullUrl);
-                  }
-                },
+                onSubmitted: (value) => _performSearch(), // 엔터를 눌렀을 때 검색 수행
               ),
             ),
             IconButton(
@@ -191,9 +213,7 @@ class _MainSearchBarState extends State<MainSearchBar> {
                 color: Colors.grey[600],
                 size: iconSize,
               ),
-              onPressed: () {
-                FocusScope.of(context).unfocus(); // 키보드 내리기
-              },
+              onPressed: _performSearch, // 아이콘을 클릭했을 때 검색 수행
             ),
           ],
         ),
