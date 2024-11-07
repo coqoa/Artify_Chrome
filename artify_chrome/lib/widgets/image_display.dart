@@ -98,71 +98,52 @@ class ImageDisplay extends StatelessWidget {
                   ? const Center(child: CircularProgressIndicator())
                   : null,
             )),
-
-        // 우측 상단 체크 아이콘
+        // 우측 상단 하트 아이콘
         Positioned(
-          top: 30.0,
-          right: 30.0,
+          top: 10.0, // 최상단에 위치하도록 설정
+          right: 10.0, // 우측 끝에 위치하도록 설정
           child: InkWell(
-              onTap: () {
-                pickImage(selectedImageUrl.value);
-              },
-              child: Obx(
-                () => Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
+            onTap: () {
+              pickImage(selectedImageUrl.value);
+            },
+            child: Obx(
+              () => Stack(
+                alignment: Alignment.center,
+                children: [
+                  Icon(
+                    Icons.favorite, // 채워진 배경 역할의 아이콘
                     color: controller.isPickedImage.value
-                        ? Colors.black.withOpacity(0.7)
-                        : Colors.white.withOpacity(0.4),
-                    borderRadius: BorderRadius.circular(25.0),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 4.0,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
+                        ? Color(0xFFFF6E6E) // 북마크 선택 시 색상 변경
+                        : Colors.white.withOpacity(0.4), // 선택 해제 시 색상
+                    size: 25.0,
                   ),
-                  child: Icon(
-                    Icons.check,
-                    color: Colors.white,
-                  ),
-                ),
-              )),
+                ],
+              ),
+            ),
+          ),
         ),
 
-        // 좌측 상단 카테고리 선택 버튼
+        // 우측 상단 카테고리 아이콘
         Positioned(
-          top: 30.0,
-          left: 30.0,
+          top: 10.0,
+          right: 50.0,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               InkWell(
                 onTap: () {
                   showCategoryList.value = !showCategoryList.value;
                 },
                 child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.4),
-                    borderRadius: BorderRadius.circular(25.0),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 4.0,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
                   child: Icon(
-                    Icons.category,
-                    color: Colors.black,
+                    Icons.filter_list,
+                    color: Colors.white.withOpacity(0.4),
+                    size: 25.0,
                   ),
                 ),
               ),
 
-              // 카테고리 목록 표시
+              // 카테고리 목록 모달
               Obx(() => showCategoryList.value
                   ? Container(
                       margin: const EdgeInsets.only(top: 10.0),

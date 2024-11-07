@@ -192,6 +192,7 @@ class _MainSearchBarState extends State<MainSearchBar> {
             ),
             Expanded(
               child: TextField(
+                autocorrect: false, // 맞춤법 검사 비활성화
                 controller: _searchController, // 컨트롤러 연결
                 focusNode: _focusNode, // 자동 포커스를 위한 FocusNode 추가
                 textAlignVertical: TextAlignVertical.center,
