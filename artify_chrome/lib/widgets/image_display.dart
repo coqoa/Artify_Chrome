@@ -1,81 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'dart:math';
 import 'package:get/get.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:artify_chrome/controllers/my_controller.dart';
-import 'package:artify_chrome/services/storage_service.dart';
 
 class ImageDisplay extends StatelessWidget {
-  final MyController controller = Get.put(MyController());
-  final StorageService storageService = Get.find<StorageService>();
-  final random = Random();
-  RxString selectedImageUrl = ''.obs;
-  RxMap<String, dynamic> jsonData = RxMap<String, dynamic>();
-  RxList<String> imageUrls = RxList<String>();
-  RxBool showCategoryList = false.obs;
-  RxString selectedCategory = 'All'.obs;
-
-  ImageDisplay({Key? key}) : super(key: key) {
-    _initializeCategoryAndLoadData();
-    checkPickedImg(); // 한 번만 실행하도록 initState 위치에 호출
-  }
-
-  Future<void> _initializeCategoryAndLoadData() async {
-    final storedCategory = await storageService.loadData('pickImageCategory');
-    selectedCategory.value = storedCategory ?? 'All';
-    storageService.saveData('pickImageCategory', selectedCategory.value);
-    _loadUrlData();
-  }
-
-  Future<void> _loadUrlData() async {
-    try {
-      final String jsonString =
-          await rootBundle.loadString('assets/image_links.json');
-      final Map<String, dynamic> data = json.decode(jsonString);
-      jsonData.assignAll(data);
-      selectCategory(selectedCategory.value);
-    } catch (e) {
-      print('Error loading URL data: $e');
-    }
-  }
-
-  void selectCategory(String category) {
-    selectedCategory.value = category;
-    storageService.saveData('pickImageCategory', category);
-
-    if (jsonData.isNotEmpty) {
-      if (category == 'All') {
-        final allImages =
-            jsonData.values.expand((urls) => List<String>.from(urls)).toList();
-        imageUrls.assignAll(allImages);
-      } else {
-        imageUrls.assignAll(List<String>.from(jsonData[category] ?? []));
-      }
-      if (imageUrls.isNotEmpty && !controller.isPickedImage.value) {
-        selectedImageUrl.value = imageUrls[random.nextInt(imageUrls.length)];
-      }
-    }
-    showCategoryList.value = false;
-  }
-
-  Future<void> checkPickedImg() async {
-    final data = await storageService.loadData('pickImage');
-    controller.isPickedImage.value = data != null && data.isNotEmpty;
-    selectedImageUrl.value = controller.isPickedImage.value && data != null
-        ? data
-        : (imageUrls.isNotEmpty
-            ? imageUrls[random.nextInt(imageUrls.length)]
-            : '');
-  }
-
-  Future<void> pickImage(String imageUrl) async {
-    controller.isPickedImage.value = !controller.isPickedImage.value;
-    final value = controller.isPickedImage.value ? imageUrl : '';
-    storageService.saveData('pickImage', value);
-    selectedImageUrl.value =
-        value.isNotEmpty ? value : imageUrls[random.nextInt(imageUrls.length)];
-  }
+  final MyController controller = Get.find<MyController>();
 
   @override
   Widget build(BuildContext context) {
@@ -84,9 +12,9 @@ class ImageDisplay extends StatelessWidget {
         // 배경 이미지
         Obx(() => Container(
               decoration: BoxDecoration(
-                image: selectedImageUrl.value.isNotEmpty
+                image: controller.selectedImageUrl.value.isNotEmpty
                     ? DecorationImage(
-                        image: NetworkImage(selectedImageUrl.value),
+                        image: NetworkImage(controller.selectedImageUrl.value),
                         fit: BoxFit.cover,
                         onError: (error, stackTrace) {
                           print('Image load error: $error');
@@ -94,30 +22,26 @@ class ImageDisplay extends StatelessWidget {
                       )
                     : null,
               ),
-              child: selectedImageUrl.value.isEmpty
+              child: controller.selectedImageUrl.value.isEmpty
                   ? const Center(child: CircularProgressIndicator())
                   : null,
             )),
+
         // 우측 상단 하트 아이콘
         Positioned(
-          top: 10.0, // 최상단에 위치하도록 설정
-          right: 10.0, // 우측 끝에 위치하도록 설정
+          top: 10.0,
+          right: 10.0,
           child: InkWell(
             onTap: () {
-              pickImage(selectedImageUrl.value);
+              controller.pickImage(controller.selectedImageUrl.value);
             },
             child: Obx(
-              () => Stack(
-                alignment: Alignment.center,
-                children: [
-                  Icon(
-                    Icons.favorite, // 채워진 배경 역할의 아이콘
-                    color: controller.isPickedImage.value
-                        ? Color(0xFFFF6E6E) // 북마크 선택 시 색상 변경
-                        : Colors.white.withOpacity(0.4), // 선택 해제 시 색상
-                    size: 25.0,
-                  ),
-                ],
+              () => Icon(
+                Icons.favorite,
+                color: controller.isPickedImage.value
+                    ? Color(0xFFFF6E6E)
+                    : Colors.white.withOpacity(0.4),
+                size: 25.0,
               ),
             ),
           ),
@@ -132,19 +56,17 @@ class ImageDisplay extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () {
-                  showCategoryList.value = !showCategoryList.value;
+                  controller.showCategoryList.value =
+                      !controller.showCategoryList.value;
                 },
-                child: Container(
-                  child: Icon(
-                    Icons.filter_list,
-                    color: Colors.white.withOpacity(0.4),
-                    size: 25.0,
-                  ),
+                child: Icon(
+                  Icons.filter_list,
+                  color: Colors.white.withOpacity(0.4),
+                  size: 25.0,
                 ),
               ),
-
               // 카테고리 목록 모달
-              Obx(() => showCategoryList.value
+              Obx(() => controller.showCategoryList.value
                   ? Container(
                       margin: const EdgeInsets.only(top: 10.0),
                       decoration: BoxDecoration(
@@ -162,7 +84,7 @@ class ImageDisplay extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           InkWell(
-                            onTap: () => selectCategory('All'),
+                            onTap: () => controller.selectCategory('All'),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10.0, vertical: 8.0),
@@ -170,16 +92,17 @@ class ImageDisplay extends StatelessWidget {
                                 'All',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: selectedCategory.value == 'All'
-                                      ? Colors.black
-                                      : Colors.grey,
+                                  color:
+                                      controller.selectedCategory.value == 'All'
+                                          ? Colors.black
+                                          : Colors.grey,
                                 ),
                               ),
                             ),
                           ),
-                          for (String category in jsonData.keys)
+                          for (String category in controller.jsonData.keys)
                             InkWell(
-                              onTap: () => selectCategory(category),
+                              onTap: () => controller.selectCategory(category),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0, vertical: 8.0),
@@ -187,7 +110,8 @@ class ImageDisplay extends StatelessWidget {
                                   category,
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: selectedCategory.value == category
+                                    color: controller.selectedCategory.value ==
+                                            category
                                         ? Colors.black
                                         : Colors.grey,
                                   ),
@@ -197,7 +121,7 @@ class ImageDisplay extends StatelessWidget {
                         ],
                       ),
                     )
-                  : const SizedBox.shrink()), // 빈 공간을 최적화
+                  : const SizedBox.shrink()),
             ],
           ),
         ),
