@@ -26,7 +26,7 @@ class MyController extends GetxController {
   Future<void> _initializeCategoryAndLoadData() async {
     final storedCategory = await storageService.loadData('pickImageCategory');
     selectedCategory.value = storedCategory ?? 'All';
-    storageService.saveData('pickImageCategory', selectedCategory.value);
+    // storageService.saveData('pickImageCategory', selectedCategory.value);
     await _loadUrlData();
   }
 

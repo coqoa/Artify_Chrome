@@ -1,3 +1,4 @@
+import 'package:artify_chrome/screens/artify_gallery.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:artify_chrome/controllers/my_controller.dart';
@@ -10,21 +11,25 @@ class ImageDisplay extends StatelessWidget {
     return Stack(
       children: [
         // 배경 이미지
-        Obx(() => Container(
-              decoration: BoxDecoration(
-                image: controller.selectedImageUrl.value.isNotEmpty
-                    ? DecorationImage(
-                        image: NetworkImage(controller.selectedImageUrl.value),
-                        fit: BoxFit.cover,
-                        onError: (error, stackTrace) {
-                          print('Image load error: $error');
-                        },
-                      )
+        Obx(() => GestureDetector(
+              child: Container(
+                decoration: BoxDecoration(
+                  image: controller.selectedImageUrl.value.isNotEmpty
+                      ? DecorationImage(
+                          image:
+                              NetworkImage(controller.selectedImageUrl.value),
+                          fit: BoxFit.cover,
+                          // fit: BoxFit.fitHeight,
+                          onError: (error, stackTrace) {
+                            print('Image load error: $error');
+                          },
+                        )
+                      : null,
+                ),
+                child: controller.selectedImageUrl.value.isEmpty
+                    ? const Center(child: CircularProgressIndicator())
                     : null,
               ),
-              child: controller.selectedImageUrl.value.isEmpty
-                  ? const Center(child: CircularProgressIndicator())
-                  : null,
             )),
 
         // 우측 상단 하트 아이콘
@@ -123,6 +128,24 @@ class ImageDisplay extends StatelessWidget {
                     )
                   : const SizedBox.shrink()),
             ],
+          ),
+        ),
+        // 우측 상단 사진 더 보기 아이콘
+        Positioned(
+          top: 10.0,
+          right: 90.0,
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ArtifyGallery()),
+              );
+            },
+            child: Icon(
+              Icons.image,
+              color: Colors.white.withOpacity(0.4),
+              size: 25.0,
+            ),
           ),
         ),
       ],
